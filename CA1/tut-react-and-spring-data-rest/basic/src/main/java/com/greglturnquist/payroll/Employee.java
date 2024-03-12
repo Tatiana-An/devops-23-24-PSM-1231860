@@ -58,7 +58,7 @@ public class Employee {
             return false;
         if (jobYears < 0)
             return false;
-        if (email == null || email.isBlank())
+        if (email == null || email.isBlank() || !email.contains("@") || !email.contains("."))
             return false;
         return true;
     }
