@@ -12,7 +12,7 @@ class EmployeeTest {
         String lastName = "Baggins";
         String description = "Ring Bearer";
         int jobYears = 0;
-        String email = "frodobaggs.provider.com";
+        String email = "frodobaggs@provider.com";
         assertDoesNotThrow(() -> new Employee(firstName, lastName, description, jobYears, email));
     }
 
@@ -95,6 +95,24 @@ class EmployeeTest {
         String description = "Ring Bearer";
         int jobYears = 5;
         String email = " ";
+        assertThrows(InstantiationException.class, () -> new Employee(firstName, lastName, description, jobYears, email));    }
+
+    @Test
+    void invalidEmployeeEmailWithoutSymbol() {
+        String firstName = "Frodo";
+        String lastName = "Baggins";
+        String description = "Ring Bearer";
+        int jobYears = 5;
+        String email = "frodobaggsprovider.com";
+        assertThrows(InstantiationException.class, () -> new Employee(firstName, lastName, description, jobYears, email));    }
+
+    @Test
+    void invalidEmployeeEmailWithoutDot() {
+        String firstName = "Frodo";
+        String lastName = "Baggins";
+        String description = "Ring Bearer";
+        int jobYears = 5;
+        String email = "frodobaggs@providercom";
         assertThrows(InstantiationException.class, () -> new Employee(firstName, lastName, description, jobYears, email));    }
 
 }
