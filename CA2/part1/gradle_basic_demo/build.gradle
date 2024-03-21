@@ -71,3 +71,18 @@ task runServer(type:JavaExec, dependsOn: classes){
 
     args '59001'
 }
+
+task backupSources(type: Copy) {
+    group = 'Backup'
+    description = 'Make a backup of the application sources'
+
+    // Directory to copy
+    def sourceDir = file('src')
+
+    // Directory of copy destination
+    def backupDir = file("${buildDir}/backup/src")
+
+    // Set source and destination
+    from sourceDir
+    into backupDir
+}
