@@ -104,6 +104,62 @@ vagrant destroy db
 vagrant destroy web
 ```
 
+### **Step 4 - connecting to H2 server in the database VM
+The final step required connecting a Spring Boot application, serving as the frontend or logic layer, to a H2 database server running on a separate VM.
+To achieve this, I updated the `application.properties` file in the Spring Boot application to use the external database server's connection details instead of the embedded database.
+
+```properties
+spring.datasource.url=jdbc:h2:tcp://192.168.56.11:9092/./jpadb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+```
+
+### Ending
+After commiting this report, the end of this assignment will be marked with the following tag:
+```bash
+git tag ca3-part2
+git push --tags
+```
+
+### ALTERNATIVE HYPERVISOR SOLUTION TO VIRTUALBOX
+There are several tools to serve as alternatives to VirtualBox, such as VMware Workstation, VMware Fusion, and Hyper-V. The choice of hypervisor depends on the user's needs and preferences.
+VMware is a leading provider of virtualization software and services, offering a range of products that enable users to run multiple virtual machines (VMs) on a single physical host, providing flexibility, scalability and resource optimization.
+Comparing to VirtualBox, in terms of:
+- Performance and Scalability: VMware typically performs better than VirtualBox, especially for enterprise environments with high workloads and resource requirements.
+- Features and Management: VMware offers more advanced features and management tools, including advanced networking, storage management, and automation capabilities.
+- Compatibility and Integration: VMware is more compatible with a wide range of enterprise software and hardware, while VirtualBox is more lightweight and may be preferred for individual users or small-scale deployments where simplicity and ease of use are prioritized.
+- Licensing and Support: VMware products are typically more expensive than VirtualBox, but they also offer more comprehensive support and services for customers.
+
+To implement this alternative solution, these are most relevant differences for configuring in the Vagrantfile:
+1. Setting up VMware:
+   Download and install VMware Workstation from the official website to host machine.
+
+2. Adjusting the Vagrantfile:
+   - Change the provider to VMware:
+     ```ruby
+     web.vm.provider "vmware_desktop" do |v|
+     ```
+   - Set the box to be used as the base image for the VMs:
+     ```ruby
+     config.vm.box = "bento/ubuntu-18.04"
+     db.vm.box = "bento/ubuntu-18.04"
+     web.vm.box = "bento/ubuntu-18.04"
+     ```
+
+3. Running the Vagrantfile:
+   - Run the Vagrantfile with the following command:
+     ```bash
+     vagrant up --provider=vmware_desktop
+     ```
+   - To halt and destroy the VMs, run the following commands:
+     ```bash
+        vagrant halt
+        vagrant destroy db
+        vagrant destroy web
+        ```
+
 ### **Conclusion**
 
-Through this assignment...
+Through this assignment, I was able to successfully setup a virtual environment using Vagrant to run a Spring Boot application and connect it to a H2 database server running on a separate VM. The main challenge was to troubleshoot and resolve compatibility issues between the Spring Boot application and the Tomcat server. Moreover, the connection with H2 database also required some troubleshooting to ensure that the application could access the database server running on a separate VM. Overall, this assignment provided valuable hands-on experience with Vagrant and virtualization, and helped me gain a better understanding of how to manage and configure virtual environments for software development and testing purposes.
