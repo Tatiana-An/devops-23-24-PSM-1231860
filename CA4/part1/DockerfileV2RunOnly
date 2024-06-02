@@ -1,4 +1,4 @@
-#DOCKERFILE FOR
+#DOCKERFILE FOR RUN THE CHAT SERVER FROM THE JAR FILE
 FROM openjdk:21-jdk-slim
 
 # Copy the JAR file into the container at /app
