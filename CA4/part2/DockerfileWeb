@@ -1,0 +1,23 @@
+FROM tomcat:10-jdk17-openjdk-slim
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y wget git
+
+# Clone repository
+RUN git clone https://github.com/Tatiana-An/devops-23-24-PSM-1231860.git /usr/src/app
+
+# Change to the project directory
+WORKDIR /usr/src/app/CA2/part2/react-and-spring-data-rest-basic
+
+# Build the application using Gradle
+RUN chmod +x gradlew
+RUN ./gradlew build
+
+# Copy the generated .war file to Tomcat webapps directory
+RUN cp ./build/libs/react-and-spring-data-rest-basic-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps
+
+# Expose port where the application will be running
+EXPOSE 8080
+
+# Start Tomcat
+CMD ["catalina.sh", "run"]
