@@ -1,0 +1,19 @@
+#DOCKERFILE FOR THE CHAT SERVER APPLICATION
+# Use a base image with Gradle and JDK 17
+FROM gradle:jdk17 AS builder
+
+# Set the working directory
+WORKDIR /CA4/part1
+
+# Clone the chat application from Git
+RUN git clone https://bitbucket.org/pssmatos/gradle_basic_demo.git
+
+# Change the working directory to the cloned repository
+WORKDIR /CA4/part1/gradle_basic_demo
+
+# Build the application using Gradle
+RUN chmod +x gradlew
+RUN ./gradlew build
+
+# Run the chat server
+ENTRYPOINT ["java", "-cp", "build/libs/basic_demo-0.1.0.jar", "basic_demo.ChatServerApp", "59001"]
