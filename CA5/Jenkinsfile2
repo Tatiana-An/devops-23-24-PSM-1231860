@@ -5,7 +5,6 @@ pipeline {
         DOCKER_CREDENTIALS_ID = '8cb6f141-8476-4915-b4d9-1b9fca9ba26f'
         DOCKER_IMAGE = 'tatianaantonio/ca5-task3'
         DOCKER_TAG = "${env.BUILD_ID}"
-        JAVA_HOME = tool 'jdk-17'
     }
 
     stages {
@@ -62,6 +61,40 @@ pipeline {
                 dir('CA2/part2/react-and-spring-data-rest-basic') {
                     echo 'Archiving artifacts...'
                     archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                }
+            }
+        }
+
+        //Create Dockerfile
+        stage('Create Dockerfile') {
+            steps {
+                dir('CA2/part2/react-and-spring-data-rest-basic') {
+                    script {
+                        def dockerfileContent = """
+                        FROM gradle:jdk21
+                        WORKDIR /app
+                        COPY build/libs/*.jar app.jar
+                        EXPOSE 8080
+                        ENTRYPOINT ["java", "-jar", "app.jar"]
+                        """
+                        writeFile file: 'Dockerfile', text: dockerfileContent
+                    }
+                }
+            }
+        }
+
+        //Publish the Docker image
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    echo 'Publishing Docker image...'
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        dir('CA2/part2/react-and-spring-data-rest-basic') {
+                            def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                            customImage.push()
+                            customImage.push('latest')
+                        }
+                    }
                 }
             }
         }
