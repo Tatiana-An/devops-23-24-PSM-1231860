@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS_ID = '8cb6f141-8476-4915-b4d9-1b9fca9ba26f'
+        DOCKER_IMAGE = 'tatianaantonio/ca5-task3'
+        DOCKER_TAG = "${env.BUILD_ID}"
+    }
+
+    stages {
+        //Checkout the project from the repository
+        stage('Checkout') {
+             steps {
+                 echo 'Checking out code from the repository'
+                 git branch: 'main', url: 'https://github.com/Tatiana-An/devops-23-24-PSM-1231860.git'
+             }
+        }
+
+        //Assemble to generate the binary file
+        stage('Assemble') {
+            steps {
+                retry(3) {
+                    dir('CA2/part2/react-and-spring-data-rest-basic') {
+                        echo 'Assembling the application...'
+                        sh 'chmod +x gradlew'
+                        sh './gradlew assemble'
+                    }
+                }
+            }
+        }
+    }
+}
