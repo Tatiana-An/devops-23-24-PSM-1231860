@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    stages {
+    //Checkout the project from the repository
+        stage('Checkout') {
+            steps {
+                echo 'Checking out repository...'
+                git branch: 'main', url: 'https://github.com/Tatiana-An/devops-23-24-PSM-1231860.git'
+                dir('CA2/part1/gradle_basic_demo') {
+                }
+            }
+        }
+
+        //Assemble to generate the binary file
+        stage('Assemble') {
+            steps {
+                echo 'Assembling...'
+                dir('CA2/part1/gradle_basic_demo') {
+                //Change gradlew permissions
+                    sh 'chmod +x gradlew'
+                    sh './gradlew assemble'
+                }
+            }
+        }
+
+        //Run the tests
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                dir('CA2/part1/gradle_basic_demo') {
+                    sh './gradlew test'
+                }
+            }
+        }
+
+        //Archive the generated binary file
+        stage('Archive') {
+            steps {
+                echo 'Archiving...'
+                dir('CA2/part1/gradle_basic_demo') {
+                    archiveArtifacts artifacts: 'build/libs/*.jar'
+                }
+            }
+        }
+    }
+}
